@@ -1,25 +1,25 @@
 #!/usr/bin/python3
 """A fabric python script that distributes an archive to the two web servers
 """
-
-import os.path
-from fabric.api import env, put, run
+from os.path import exists
+from fabric.api import run, put, env
 
 env.hosts = ["3.233.234.234", "107.21.40.158"]
+
 
 def do_deploy(archive_path):
     """This method distributes an archive to the two web servers
     Args:
         archive_path (str): The path of the archive to distribute.
     Returns:
-        False if the fileNameWithExt doesn't exist at archive_path or an error
-        occurs True otherwise
+        False if the fileNameWithExt doesn't exist at archive_path or an error occurs 
+        True otherwise 
     """
-    if not os.path.exists(archive_path):
+    if not exists(archive_path):
         return False
 
-    fileNameWithExt = archive_path.split("/")[-1]
-    fileName = fileNameWithExt.split(".")[0]
+    fileNameWithExt = archive_path.split("/")[1]
+    fileName = archive_path.split("/")[1].split(".")[0]
 
     if put(archive_path, "/tmp/{}".format(
            fileNameWithExt)).failed is True:
