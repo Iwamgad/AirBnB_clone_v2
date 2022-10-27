@@ -21,28 +21,39 @@ def do_deploy(archive_path):
     fileNameWithExt = archive_path.split("/")[-1]
     fileName = fileNameWithExt.split(".")[0]
 
-    if put(archive_path, "/tmp/{}".format(fileNameWithExt)).failed is True:
+    if put(archive_path, "/tmp/{}".format(
+           fileNameWithExt)).failed is True:
         return False
-    if run("rm -rf /data/web_static/releases/{}/".
-           format(fileName)).failed is True:
+
+    if run("rm -rf /data/web_static/releases/{}/".format(
+           fileName)).succeeded is False:
         return False
-    if run("mkdir -p /data/web_static/releases/{}/".
-           format(fileName)).failed is True:
+
+    if run("mkdir -p /data/web_static/releases/{}/".format(
+           fileName)).succeeded is False:
         return False
-    if run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
-           format(fileNameWithExt, fileName)).failed is True:
+
+    if run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".format(
+           fileNameWithExt, fileName)).succeeded is False:
         return False
+
     if run("rm /tmp/{}".format(fileNameWithExt)).failed is True:
         return False
+
     if run("mv /data/web_static/releases/{}/web_static/* "
-           "/data/web_static/releases/{}/".format(fileName, fileName)).failed is True:
+           "/data/web_static/releases/{}/".format(fileName, fileName)
+           ).failed is True:
         return False
+
     if run("rm -rf /data/web_static/releases/{}/web_static".
            format(fileName)).failed is True:
         return False
+
     if run("rm -rf /data/web_static/current").failed is True:
         return False
+
     if run("ln -s /data/web_static/releases/{}/ /data/web_static/current".
-           format(fileName)).failed is True:
+           format(fileName)).succeeded is False:
         return False
+
     return True
