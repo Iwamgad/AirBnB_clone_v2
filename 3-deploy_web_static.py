@@ -17,7 +17,7 @@ def do_pack():
     archivePath = "web_static_" + date.strftime("%Y%m%d%H%M%S") + "." + "tgz"
 
     if isdir("versions") is False:
-            local("mkdir -p versions")
+        local("mkdir -p versions")
 
     createdFile = local("tar -cvzf versions/{} web_static".format(archivePath))
 
