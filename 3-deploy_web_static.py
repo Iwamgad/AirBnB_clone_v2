@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-"""A fabric python script (based on the file 2-do_deploy_web_static.py) that creates and distributes an 
-   archive to your web servers, using the function deploy
+"""A fabric python script (based on the file 2-do_deploy_web_static.py)
+that creates and distributes an archive to your web servers,
+using the function deploy
 """
 
 from os.path import exists, isdir
@@ -8,6 +9,7 @@ from fabric.api import *
 from datetime import datetime
 
 env.hosts = ["3.233.234.234", "107.21.40.158"]
+
 
 def do_pack():
     """This method creates a tar archive of the directory web_static"""
@@ -23,6 +25,7 @@ def do_pack():
         return archivePath
     else:
         return None
+
 
 def do_deploy(archive_path):
     """This method distributes an archive to the two web servers
@@ -69,6 +72,7 @@ def do_deploy(archive_path):
         return False
 
     return True
+
 
 def deploy():
     """This method deploys the static content by calling the above methods"""
