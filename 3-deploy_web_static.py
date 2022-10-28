@@ -71,8 +71,8 @@ def do_deploy(archive_path):
     return True
 
 def deploy():
-    """Create and distribute an archive to a web server."""
-    file = do_pack()
-    if file is None:
-        return False
-    return do_deploy(file)
+    """This method deploys the static content by calling the above methods"""
+    file_path = do_pack()
+    if file_path is not None:
+        return do_deploy(file_path)
+    return False
