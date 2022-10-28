@@ -3,9 +3,8 @@
 that creates and distributes an archive to your web servers,
 using the function deploy
 """
-
-from os.path import exists, isdir
-from fabric.api import *
+from os.path import exists
+from fabric.api import run, put, env, local
 from datetime import datetime
 
 env.hosts = ["3.233.234.234", "107.21.40.158"]
@@ -14,17 +13,15 @@ env.hosts = ["3.233.234.234", "107.21.40.158"]
 def do_pack():
     """This method creates a tar archive of the directory web_static"""
     date = datetime.now()
-    archivePath = "web_static_" + date.strftime("%Y%m%d%H%M%S") + "." + "tgz"
+    archiveName = date.strftime("%Y%m%d%H%M%S")
+    archivePath = "versions/web_static_" + archiveName + ".tgz"
 
-    if isdir("versions") is False:
-        local("mkdir -p versions")
+    local("mkdir -p versions")
 
-    createdFile = local("tar -cvzf versions/{} web_static".format(archivePath))
-
-    if createdFile is not None:
-        return archivePath
-    else:
+    if local("tar -cvzf {} web_static".format(archivePath)).failed is True:
         return None
+
+    return archivePath
 
 
 def do_deploy(archive_path):
@@ -76,7 +73,7 @@ def do_deploy(archive_path):
 
 def deploy():
     """This method deploys the static content by calling the above methods"""
-    file_path = do_pack()
-    if file_path is not None:
-        return do_deploy(file_path)
+    filePath = do_pack()
+    if filePath is not None:
+        return do_deploy(filePath)
     return False
