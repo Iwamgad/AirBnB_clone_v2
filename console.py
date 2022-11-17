@@ -114,39 +114,40 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """Creates instances of different classes and Prints the id
+        Usage: create <Class name> <key 1>=<value 2> <key 2>=<value 2> ...
+        """
         if not args:
-            print("** class name missing **")
-            return
-        args = args.split(" ")
-        if args[0] not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        newInstance = HBNBCommand.classes[args[0]]()
+            raise SyntaxError()
+        myList = args.split(" ")
+        foundClass = False 
 
-        for pair in args[1:]:
-            attr = pair.split("=", maxsplit=1)
-            key = attr[0]
-            value = ""
-            if attr[1][0] == '\"':
-                value = attr[1][1:-1].replace("_", " ").replace('"', '\"')
-            else:
-                if '.' in attr[1]:
-                    try:
-                        value = float(attr[1])
-                    except (SyntaxError, NameError):
-                        pass
+        for i in HBNBCommand.classes:
+            if i == myList[0]:
+                foundClass = True
+                break
+
+        if len(args) == 0:
+            print("** class name missing **")
+        elif foundClass == False:
+            print("** class doesn't exist **")
+        else:
+            object = HBNBCommand.classes[myList[0]]()
+
+            for i in range(1, len(myList)):
+                k, v = tuple(myList[i].split("="))
+                
+                if v[0] == '"':
+                    v = v.strip('"').replace("_", " ")
                 else:
                     try:
-                        value = int(attr[1])
+                        v = eval(v)
                     except (SyntaxError, NameError):
-                        pass
-            if value != "":
-                setattr(newInstance, key, value)
-            else:
-                pass
-        newInstance.save()
-        print(newInstance.id)
+                        continue
+                object.__dict__[k] = v
+        storage.new(object)
+        object.save()   
+        print(object.id)
 
     def help_create(self):
         """ Help information for the create method """
